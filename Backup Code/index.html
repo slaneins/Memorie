@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Card Game</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.15/lodash.min.js"></script>
+    <!-- development version, includes helpful console warnings -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<body>
+    <div id="app">
+        <div class="row">
+            <div class="col-md-6 col-lg-6 col-xl-5 mx-auto">
+                 <div class="row justify-content-md-center">
+                    <div v-for="card in memoryCards" class="col-auto mb-3 flip-container" :class="{ 'flipped': card.isFlipped, 'matched' : card.isMatched }">
+                        <div class="memorycard">
+                            <div class="front border rounded shadow"><img width="100" height="150" src="/img/cartback.jpg"></div>
+                            <div class="back rounded border"><img width="100" height="150" :src="'/img/cards/'+card.img"></div>
+                        </div>
+                     </div>
+                </div>
+            </div>
+        </div>
+        </div>
+        <style>
+        
+        .flip-container.flipped .back {
+        -webkit-transform: rotateY(0deg);
+        -moz-transform: rotateY(0deg);
+        -o-transform: rotateY(0deg);
+        -ms-transform: rotateY(0deg);
+        transform: rotateY(0deg);
+    }
+    .flip-container.flipped .front {
+        -webkit-transform: rotateY(180deg);
+        -moz-transform: rotateY(180deg);
+        -o-transform: rotateY(180deg);
+        -ms-transform: rotateY(180deg);
+        transform: rotateY(180deg);
+    }
+            .flip-container {
+        -webkit-perspective: 1000;
+        -moz-perspective: 1000;
+        -o-perspective: 1000;
+        perspective: 1000;
+        min-height: 120px;
+        cursor: pointer;
+    }
+    .front,
+    .back {
+        -webkit-backface-visibility: hidden;
+        -moz-backface-visibility: hidden;
+        -o-backface-visibility: hidden;
+        backface-visibility: hidden;
+        -webkit-transition: 0.6s;
+        -webkit-transform-style: preserve-3d;
+        -moz-transition: 0.6s;
+        -moz-transform-style: preserve-3d;
+        -o-transition: 0.6s;
+        -o-transform-style: preserve-3d;
+        -ms-transition: 0.6s;
+        -ms-transform-style: preserve-3d;
+        transition: 0.6s;
+        transform-style: preserve-3d;
+        top: 0;
+        left: 0;
+        width: 100%;
+    }
+    .back {
+        -webkit-transform: rotateY(-180deg);
+        -moz-transform: rotateY(-180deg);
+        -o-transform: rotateY(-180deg);
+        -ms-transform: rotateY(-180deg);
+        transform: rotateY(-180deg);
+        position: absolute;
+    }
+    .matched{
+   opacity: 0.3;
+    }
+    </style>
+   <script>
+   let app = new Vue({
+    el: '#app',
+    data:{
+        memoryCards: [],
+            cards: [
+                {
+                    name: 'Apfel',
+                    img: 'apfel.png',
+
+                },
+                {
+                    name: 'Buch',
+                    img: 'buch.jpg',
+ 
+                },
+                {
+                    name: 'Wald',
+                    img: 'wald.jpg',
+
+                },
+                {
+                    name: 'Baum',
+                    img: 'baum.jpg',
+
+                },
+                {
+                    name: 'Tomate',
+                    img: 'tomate.png',
+
+                },
+                {
+                    name: 'Briefkasten',
+                    img: 'briefkasten.jpg',
+
+                },
+            ],
+    },
+    
+    created(){
+        this.cards.forEach((card) => {
+            Vue.set(card,'isFlipped',false)
+            Vue.set(card,'isMatched',false);
+        });
+
+        this.memoryCards = _.shuffle(this.memoryCards.concat(_.cloneDeep(this.cards), _.cloneDeep(this.cards)));
+    },
+
+    methods:{
+        
+        flipCard(card){
+
+if(card.isMatched || card.isFlipped || this.flippedCards.length === 2)
+        return;
+
+card.isFlipped = true;
+
+if(this.flippedCards.length < 2)
+    this.flippedCards.push(card);
+if(this.flippedCards.length === 2)    
+    this._match(card);
+},
+
+_match(card){
+    if(this.flippedCards[0].name === this.flippedCards[1].name){
+        setTimeout(() => {
+    this.flippedCards.forEach(card => card.isMatched = true);
+    this.flippedCards = [];
+
+    //All cards matched ?
+    if(this.memoryCards.every(card => card.isMatched === true)){
+        this.finish = true;
+    }
+
+}, 400);
+    }
+    else{
+        setTimeout(() => {
+            this.flippedCards.forEach((card) => {card.isFlipped = false});
+            this.flippedCards = [];
+        }, 800);
+    }
+    
+},
+
+    }
+});
+
+</script> 
+</body>
+</html>

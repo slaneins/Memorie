@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Card Game</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="/Styles/game.css">
+    <!-- development version, includes helpful console warnings -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.15/lodash.min.js"></script>
+</head>
+<body>
+    <div id="app">
+        <div class="row">
+            <div class="col-md-6 col-lg-6 col-xl-5 mx-auto">
+                 <div class="row justify-content-md-center">
+                    <div v-for="card in memoryCards" class="col-auto mb-3 flip-container" :class="{ 'flipped': card.isFlipped, 'matched' :  card.isMatched }" @click="flipCard(card)">
+                        <div class="memorycard">
+                            <div class="front border rounded shadow"><img width="100" height="150" src="/img/cartback.jpg"></div>
+                            <div class="back rounded border"><img width="100" height="150" :src="'/img/cards/'+card.img"></div>
+                        </div>
+                     </div>
+                </div>
+            </div>
+        </div>
+        </div>  
+</body>
+</html>
+
+<script>
+   let app = new Vue({
+    el: '#app',
+    data:{  
+            matchedColors:[],
+            flippedCards: [],
+            memoryCards: [],
+            cards: [
+            {
+                    name: 'Apfel',
+                    img: 'apfel.png',
+
+                },
+                {
+                    name: 'Buch',
+                    img: 'buch.jpg',
+ 
+                },
+                {
+                    name: 'Wald',
+                    img: 'wald.jpg',
+
+                },
+                {
+                    name: 'Baum',
+                    img: 'baum.jpg',
+
+                },
+                {
+                    name: 'Tomate',
+                    img: 'tomate.png',
+
+                },
+                {
+                    name: 'Briefkasten',
+                    img: 'briefkasten.jpg',
+
+                },
+            ],
+    },
+    created(){
+        this.cards.forEach((card) => {
+    Vue.set(card,'isFlipped',false);
+    Vue.set(card,'isMatched',false);
+    });
+    
+
+        this.memoryCards = _.shuffle(this.memoryCards.concat(_.cloneDeep(this.cards), _.cloneDeep(this.cards)));
+    },
+    methods:{
+            flipCard(card){
+    card.isFlipped = true;
+
+    if(this.flippedCards.length < 2)
+        this.flippedCards.push(card);
+    if(this.flippedCards.length === 2)    
+        this._match(card);
+},
+
+_match(card){
+
+    if(this.flippedCards[0].name === this.flippedCards[1].name)
+        this.flippedCards.forEach(card => card.isMatched = true);
+
+    else
+        this.flippedCards.forEach(card => card.isFlipped = false);
+    
+        this.flippedCards = [];
+    }
+
+},
+_changeColor(){
+    if(this.card.isMatched = true)
+    var colors = '#'+(Math.random()*0xFFFFFF<<0).toString(16);
+    document.matched.style.background = this.matchedColors;
+},
+
+    
+});          
+</script>
